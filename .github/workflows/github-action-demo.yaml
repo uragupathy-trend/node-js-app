@@ -20,9 +20,9 @@ jobs:
         username: ${{ secrets.ACR_USERNAME }}
         password: ${{ secrets.ACR_PASSWORD }}  
 
-    # Commit and push all changed files.
+    #Builds the docker image and push to ACR
     - name: Build and Push Docker Images to Azure Repo
       if: github.event_name == 'push'
       run: |
-        docker build . -t dxcpocregistry.azurecr.io/node-js-hello-world:v1
-        docker push dxcpocregistry.azurecr.io/node-js-hello-world:v1
+        docker build . -t dxcpocregistry.azurecr.io/node-js-app:v1
+        docker push dxcpocregistry.azurecr.io/node-js-app:v1
