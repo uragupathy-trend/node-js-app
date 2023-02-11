@@ -3,6 +3,8 @@ on:
   push:
     branches:
       - main
+env:
+  SMARTCHECK_URL: https://40.76.172.231/api     
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -14,11 +16,19 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    - uses: azure/docker-login@v1
+    - name: Azure Login
+      uses: azure/docker-login@v1
       with:
         login-server: dxcpocregistry.azurecr.io # default: index.docker.io
         username: ${{ secrets.ACR_USERNAME }}
         password: ${{ secrets.ACR_PASSWORD }}  
+
+    - name: smart check token
+      uses: sergeysova/jq-action@v2
+      run: |
+        raw=$(curl -sk -X POST $SMARTCHECK_URL/sessions -H 'Content-type:application/json' -H 'X-Api-Version:2018-05-01' -d '{"user": {"userid":${{ secrets.SMARTCHECK_USERNAME }},"password":${{ secrets.SMARTCHECK_PASSWORD }}}}')
+        token=$(cat raw | jq .token)
+        echo $token
 
     #Builds the docker image and push to ACR
     - name: Build and Push Docker Images to Azure Repo
