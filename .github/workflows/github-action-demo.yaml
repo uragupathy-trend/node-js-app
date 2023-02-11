@@ -26,8 +26,8 @@ jobs:
     - name: jq 
       uses: sergeysova/jq-action@v2
       id: version
-        with:
-          cmd: 'jq .version package.json -r'
+      with:
+        cmd: 'jq .version package.json -r'
         
 
     #Builds the docker image and push to ACR
