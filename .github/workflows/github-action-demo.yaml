@@ -33,6 +33,11 @@ jobs:
     #Builds the docker image and push to ACR
     - name: Get Api Session Token
       run: |
-        raw=$(curl -sk -X POST $SMARTCHECK_URL/sessions -H 'Content-type:application/json' -H 'X-Api-Version:2018-05-01' -d '{"user": {"userid":"${{ secrets.SMARTCHECK_USERNAME }}","password":"${{ secrets.SMARTCHECK_PASSWORD }}"}}')
-        token=$(cat $raw | jq .token)
-        echo $token   
+        curl -sk -X POST '$SMARTCHECK_URL/sessions' -H 'Content-type:application/json' -H 'X-Api-Version:2018-05-01' -d '{"user": {"userid":"${{ secrets.SMARTCHECK_USERNAME }}","password":"${{ secrets.SMARTCHECK_PASSWORD }}"}}' -o response.json
+
+    - name: read token
+      id: token 
+      run: echo "::set-output name=id::$(cat response.json | jq .token)"
+
+    - name: print workspace id
+      run: echo ${{ steps.token.outputs.id }}      
